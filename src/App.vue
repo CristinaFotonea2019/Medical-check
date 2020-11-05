@@ -1,19 +1,31 @@
+
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-content transition="slide-x-transition">
+      <v-layout align-space-around justify-space-between row fill-height>
+        <MedicalMenu/>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </v-layout>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import MedicalMenu from './components/MedicalMenu.vue';
+import axios from "axios";
+/* eslint-disable */
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    MedicalMenu
+  },
+    created() {
+    console.log("Pana aici");
+    this.$vuetify.theme.themes.light.primary = "#CE2727";
   }
-}
+};
 </script>
 
 <style>

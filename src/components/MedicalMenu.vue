@@ -1,0 +1,94 @@
+<template>
+  <v-navigation-drawer permanent class="align">
+    <h2 class="fast">Medical Check</h2>
+    <v-divider></v-divider>
+    <v-list v-for="item in route" :key="item.name" class="alignBtnFAST">
+      <v-list-tile>
+        <v-list-tile-content>
+          <v-btn class="button" elevation="7" color="#bb0000" v-on:click="routeTo(item.path)">
+            <v-list-tile-title class="title-menu">{{ item.name }}</v-list-tile-title>
+          </v-btn>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
+  </v-navigation-drawer>
+</template>
+
+
+<script>
+/* eslint-disable */
+import { router } from "../router";
+export default {
+  data() {
+    return {
+      route: [
+        //vector de obiecte
+        {
+          name: "Home", //denumim paginile; am ales sa le dau un nume cat se poate de explicit
+          path: "/" //denumim adresa de o sa apara in link ex "localhost blabla /Home"
+        },
+        {
+          name: "PacientRegister", //Ordinea in care sunt puse aici nu conteaza
+          path: "/PacientRegister"// le-am pus in ordinea in care le-am asezat in diagrama, cum vin ele
+        },
+        {
+          name: "PacientLogin",
+          path: "/PacientLogin"
+        },
+        {
+          name: "Enroll",
+          path: "/Enroll"
+        },
+        {
+          name: "MedicalCheck",
+          path: "/MedicalCheck"
+        },
+        {
+          name: "History",
+          path: "/History"
+        },
+        {
+          name: "DoctorLogin",
+          path: "/DoctorLogin"
+        },
+        {
+          name: "Recomandation",
+          path: "/Recomandation"
+        }
+
+      ]
+    };
+  },
+  methods: {
+    routeTo(routename) {
+      console.log("Meniu");
+      router.push(routename);
+    }
+  }
+};
+</script>
+
+<style>
+.title-menu {
+  /* margin-left: 50px; */
+  color: antiquewhite;
+}
+.align {
+  width: 180px !important;
+  /* align-content: center!important; */
+  align-items: center !important;
+}
+.fast {
+  width: 100%;
+  text-align: center;
+  color: brown;
+  font-family: "Impact";
+  font-size: 3rem;
+}
+.button {
+  width: 100%;
+}
+.alignBtnFAST {
+  margin-top: 10px;
+}
+</style>
