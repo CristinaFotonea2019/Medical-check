@@ -3,13 +3,8 @@
     <div class="back" :style="{'background-image':'url('+require('../assets/Contact.png')+')'}">
       <v-layout align-space-between justify-space-between column fill-height>
         <div class="about"></div>
-        <div class="logo" > <v-img src='@/assets/Contact.png' :height=180 :width=180 class="image"></v-img></div>
+       
         <div class="motto">
-          <h3>
-            GET YOUR
-            <font class="motto2">FAST SAFETY</font> READY FOR
-            <font class="motto2">TRAVEL!</font>
-          </h3>
         </div>
       </v-layout>
     </div>

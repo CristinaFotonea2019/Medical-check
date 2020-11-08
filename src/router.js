@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import PacientRegister from './views/PacientRegister.vue'
-import PacientLogin from './views/PacientLogin.vue'
-import Home from './views/Home.vue'
+import PatientLogin from './views/PatientLogin.vue'
 import Enroll from './views/Enroll.vue'
-import MedicalCheck from './views/MedicalCheck.vue'
+import Home from './views/Home.vue'
 import DoctorLogin from './views/DoctorLogin.vue'
+import PatientRegister from './views/PatientRegister.vue'
 import History from './views/History.vue'
 import Recomandation from './views/Recomandation.vue'
+import MedicalCheck from './views/MedicalCheck.vue'
 // import axios from "axios"
 
 Vue.use(Router)
@@ -20,48 +20,53 @@ export const router = new Router({
             name: 'Home',
             component: Home
         },
-          {
-            name: "PacientRegister", //Ordinea in care sunt puse aici nu conteaza
-            path: "/PacientRegister", // le-am pus in ordinea in care le-am asezat in diagrama, cum vin ele
-            component: PacientRegister
-
-          },
-          {
-            name: "PacientLogin",
-            path: "/PacientLogin",
-            component: PacientLogin
-          },
-          {
-            name: "Enroll",
-            path: "/Enroll",
-            component: Enroll
-          },
-          {
+        {
             name: "MedicalCheck",
             path: "/MedicalCheck",
             component: MedicalCheck
           },
-          {
-            name: "History",
-            path: "/History",
-            component: History
-          },
-          {
+        {
             name: "DoctorLogin",
             path: "/DoctorLogin",
             component: DoctorLogin
-          },
-          {
-            name: "Recomandation",
-            path: "/Recomandation",
+        },
+        {
+            path: '/PatientLogin',
+            name: 'PatientLogin',
+            component: PatientLogin
+        },
+        {
+            path: '/PatientRegister',
+            name: 'PatientRegister',
+            component: PatientRegister
+        },
+        {
+            path: '/Recomandation',
+            name: 'Recomandation',
             component: Recomandation
-          }
-       
+        },
+        {
+            path: '/History',
+            name: 'History',
+            component: History
+        },
+        {
+            path: '/Enroll',
+            name: 'Enroll',
+            component: Enroll
+        }
     ]
 
 })
 router.beforeEach((to, from, next) => {
 
-    const publicPages = ['/', '/PacientRegister', '/History', '/DoctorLogin', '/PacientLogin', '/Recomandation', '/Enroll', '/MedicalCheck'];
-
-})
+    const publicPages = ['/', '/Login', '/Register', '/Mobile', '/Sensors', '/Contact'];
+    const logPage =['/Login'];
+    if(localStorage.getItem('isLogged') == "false" && to.fullPath == '/History' )
+    {
+        return next('/Login');
+    }
+    next();
+   
+}
+)
