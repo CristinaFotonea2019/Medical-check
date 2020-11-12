@@ -6,7 +6,7 @@ import Home from './views/Home.vue'
 import DoctorLogin from './views/DoctorLogin.vue'
 import PatientRegister from './views/PatientRegister.vue'
 import History from './views/History.vue'
-import Recomandation from './views/Recomandation.vue'
+import Patients from './views/Patients.vue'
 import MedicalCheck from './views/MedicalCheck.vue'
 // import axios from "axios"
 
@@ -14,6 +14,7 @@ Vue.use(Router)
 /* eslint-disable */
 export const router = new Router({
     mode: 'hash',
+    //Aici apar toate componentele(paginile) aplicatiei; Mai sus le importam 
     routes: [
         {
             path: '/',
@@ -41,9 +42,9 @@ export const router = new Router({
             component: PatientRegister
         },
         {
-            path: '/Recomandation',
-            name: 'Recomandation',
-            component: Recomandation
+            path: '/Patients',
+            name: 'Patients',
+            component: Patients
         },
         {
             path: '/History',
@@ -58,15 +59,22 @@ export const router = new Router({
     ]
 
 })
-router.beforeEach((to, from, next) => {
+// router.beforeEach((to, from, next) => {
 
-    const publicPages = ['/', '/Login', '/Register', '/Mobile', '/Sensors', '/Contact'];
-    const logPage =['/Login'];
-    if(localStorage.getItem('isLogged') == "false" && to.fullPath == '/History' )
-    {
-        return next('/Login');
-    }
-    next();
+//     const publicPages = ['/', '/MedicalCheck', '/DoctorLogin', '/PatientLogin', '/PatientRegister', '/Recomandation', '/History','/Enroll'];
+//     const patientPage =['/PatientLogin'];
+//     const doctorPage =['/DoctorLogin'];
+//     if(localStorage.getItem('Patient_Logged') == "false" && (to.fullPath == '/Enroll' || to.fullPath == '/MedicalCheck' || to.fullPath == '/History' )) 
+//     {
+//         return next('/PatientLogin');
+//     }
+//     // daca variabila Patient_Logged este false adica nu este pacientul logat si se vrea a accesa una din paginile de mai sus enumerate(pe care le poate vedea doar un pacient logat)
+//     // te redirectioneaza automat catre pagina de login a pacientului
+//     if(localStorage.getItem('Doc_Logged') == "false" && (to.fullPath == '/Recomandation' || to.fullPath == '/MedicalCheck' || to.fullPath == '/History' ))
+//     {
+//         return next('/DoctorLogin');
+//     } //si aici exact acelasi lucru doar ca pentru medic
+//     next();
    
-}
-)
+// }
+// )

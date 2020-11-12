@@ -8,19 +8,14 @@
     :style="{'background-image':'url('+require('../assets/Sensors.png')+')'}"
   >
     <div class="header">
-      <v-layout align-center justify-space-between row fill-height>
-        <img class="image" src="@/assets/LogoHome.png" />
-        <h2 class="textAlert">Alert Dashboard</h2>
-        <v-btn class="btnUser" v-on:click="User()">
-          <img class="imagebtn" src="@/assets/User.png" />
-        </v-btn>
+      <v-layout align-center >
+        <h2 class="titleDashboard" > Dashboard</h2>
       </v-layout>
     </div>
-    <div class="alignData">
+   <!--    <div class="alignData">
       <v-list v-for="item in historyData" :key="item.name" class="listHistory">
         <v-list-tile>
-          <v-list-tile-content class="listAlign" v-on:click="Details(item)">
-            <v-btn class="btnDelete" rounded v-on:click="DeleteCar(item.idcar)">X</v-btn>
+       <v-list-tile-content class="listAlign" v-on:click="Details(item)">
             <v-spacer />
             <h2 id="carOwner">{{item.car_owner}}</h2>
             <v-spacer />
@@ -30,43 +25,22 @@
             <v-spacer />
             <h2>{{item.car_date}}</h2>
           </v-list-tile-content>
-        </v-list-tile>
+        </v-list-tile> 
       </v-list>
-    </div>
-
-    <v-dialog v-model="dialogHistory" :max-width="400">
-      <v-card class="popUpUser">
-        <h3>User info</h3>
-        <center>
-          <v-text-field v-model="usernameHistory" class="log justify-center resizeHistory" disabled></v-text-field>
-          <v-text-field v-model="nameHistory" class="log justify-center resizeHistory" disabled></v-text-field>
-          <v-text-field v-model="mailHistory" class="log justify-center resizeHistory" disabled></v-text-field>
-          <v-text-field v-model="persIdHistory" class="log justify-center resizeHistory" disabled></v-text-field>
-        </center>
-        <div class="btnAlignRow">
-          <v-btn class="btnBack" rounded color="primary" v-on:click="UserBack()">Sign out</v-btn>
-          <v-btn class="btnDeleteUser" rounded color="primary" v-on:click="UserDelete()">Delete User</v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialogDeleteEvent" :max-width="350">
-      <v-card class="popUpUser" :height="200">
-        <h2>{{deleteText}}</h2>
-        <v-btn class="btnDeleteOk" rounded color="primary" v-on:click="DeleteOk()">Ok</v-btn>
-      </v-card>
-    </v-dialog>
+    </div> -->
     <v-dialog v-model="dialogDetailsEvent" :max-width="350">
       <v-card class="carCrashDetails" :height="400">
 
-        <h1>Car Crash Details</h1>
-        <h2>Number: <b>{{carCrash_nr}} </b></h2>
+        <h1>Person Details</h1>
+        <!--<h2>Number: <b>{{carCrash_nr}} </b></h2>
         <h2> Owner: <b> {{carCrash_owner}}</b></h2>
         <h2>Impact sensor: <b>{{carCrash_crashSensor}}</b></h2>
         <h2> GPS: <b>{{carCrash_GPS}}</b></h2>
         <h2>Temperature sensor: <b>{{carCrash_temperatureSensor}}</b></h2>
         <h2> Fire sensor:<b> {{carCrash_fireSensor}}</b></h2>
         <h2> Emergency Person: <b>{{carCrash_EmergencyPerson}}</b></h2>
-        <h2> Date: <b>{{carCrash_date}}</b></h2>
+        <h2> Date: <b>{{carCrash_date}}</b></h2> --> 
+        <!-- Aici o sa fie datele pe care le afiseaza din baza de date despre fiecare pacient-->
       </v-card>
     </v-dialog>
   </v-layout>
@@ -101,19 +75,6 @@ export default {
     };
   },
   methods: {
-    User() {
-      this.nameHistory = localStorage.getItem("userData_name");
-      this.mailHistory = localStorage.getItem("userData_mail");
-      this.usernameHistory = localStorage.getItem("userData_username");
-      this.persIdHistory = localStorage.getItem("userData_persId");
-      this.dialogHistory = !this.dialogHistory;
-    },
-    // UserOk() {
-    //   this.dialogHistory = false;
-    //   if (this.popUpUser == "Inchide!") {
-    //     console.log("Merge");
-    //   }
-
     UserBack() {
       localStorage.setItem("userData_name", "");
       localStorage.setItem("userData_mail", "");
@@ -122,41 +83,7 @@ export default {
       localStorage.setItem("isLogged", "false");
       router.push("/Login");
     },
-    UserDelete() {
-      axios
-        .post("/api/deleteUser", {
-          persId: localStorage.getItem("userData_persId")
-        })
-        .then(response => {
-          localStorage.setItem("userData_name", "");
-          localStorage.setItem("userData_mail", "");
-          localStorage.setItem("userData_username", "");
-          localStorage.setItem("userData_persId", "");
-          localStorage.setItem("isLogged", "false");
-          router.push("/Login");
-        });
-    },
-    DeleteCar(idcar) {
-      this.detailsFlag = true;
-      console.log("Delete");
-      axios
-        .post("/api/deleteCarEvents", {
-          idcar: idcar
-        })
-        .then(response => {
-          this.deleteText = "Delete successfully!";
-        });
-      this.historyData.forEach(element => {
-        if (element.idcar == idcar) {
-          console.log(this.historyData.indexOf(element));
-          this.historyData.splice(this.historyData.indexOf(element), 1);
-        }
-      });
-      this.dialogDeleteEvent = !this.dialogDeleteEvent;
-    },
-    DeleteOk() {
-      this.dialogDeleteEvent = false;
-    },
+   
     Details(item) {
       console.log("Detalii aiciiiiiii");
       setTimeout(() => {
@@ -171,50 +98,50 @@ export default {
           this.carCrash_date = item.car_date;
           this.dialogDetailsEvent = !this.dialogDetailsEvent;
         } else {
-          //S-a apasat pe Delete
+          
         }
       }, 100);
 
       console.log("Detalii");
     }
   },
-  mounted() {
-    console.log("Mounted");
-    setInterval(() => {
-      axios.post("/api/getCrashEvents").then(
-        response => {
-          console.log(this.historyData.length + " " + response.data.length);
-          console.log("de ce");
-          if (this.historyData.length < response.data.length) {
-            if (this.historyData.length == 0) {
-              response.data.forEach(element => {
-                console.log("Orice2");
-                this.historyData.push(element);
-              });
-            } else {
-              for (
-                let index = this.historyData.length;
-                index < response.data.length;
-                index++
-              ) {
-                this.historyData.push(response.data[index]);
-              }
-            }
-          }
+  // mounted() {
+  //   console.log("Mounted");
+  //   setInterval(() => {
+  //     axios.post("/api/getCrashEvents").then(
+  //       response => {
+  //         console.log(this.historyData.length + " " + response.data.length);
+  //         console.log("de ce");
+  //         if (this.historyData.length < response.data.length) {
+  //           if (this.historyData.length == 0) {
+  //             response.data.forEach(element => {
+  //               console.log("Orice2");
+  //               this.historyData.push(element);
+  //             });
+  //           } else {
+  //             for (
+  //               let index = this.historyData.length;
+  //               index < response.data.length;
+  //               index++
+  //             ) {
+  //               this.historyData.push(response.data[index]);
+  //             }
+  //           }
+  //         }
 
-          console.log(this.historyData);
-        },
-        error => {
-          console.log(error);
-        }
-      );
-    }, 1500);
-  },
-  watch: {
-    $route(to, from) {
-      console.log("Routed");
-    }
-  }
+  //         console.log(this.historyData);
+  //       },
+  //       error => {
+  //         console.log(error);
+  //       }
+  //     );
+  //   }, 1500);
+  // },
+  // watch: {
+  //   $route(to, from) {
+  //     console.log("Routed");
+  //   }
+  // }
 };
 </script>
 <style>
@@ -224,12 +151,13 @@ export default {
   height: 60px;
   /* background-color: black; */
 }
-.textAlert {
+.titleDashboard {
   font-size: 2rem;
   font-weight: 400;
   font-family: "Roboto", sans-serif;
   font-style: italic;
   color: white;
+ margin-left: 800px;
 }
 .image {
   width: 20px;

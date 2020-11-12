@@ -7,26 +7,20 @@
           <div>
             <h2>Login</h2>
           </div>
-          <v-text-field
-            :rules="logUserRules"
-            v-model="nameLog"
+           <v-text-field
+            :rules="mailRulesPatient"
+            v-model="mailLoginPatient"
             class="log justify-center"
-            label="Enter Username"
-          ></v-text-field>
+            label="Enter E-mail"
+          ></v-text-field> 
           <v-text-field
-            :rules="logPassRules"
-            v-model="passLog"
+            :rules="passRulesPatient"
+            v-model="passLoginPatient"
             class="log justify-center"
             label="Enter Password"
             :type="hidden ? 'text' : 'password'"
           ></v-text-field>
-          <v-text-field
-            :rules="logIDRules"
-            v-model="persID"
-            class="log justify-center"
-            label="Personnel ID"
-          ></v-text-field>
-          <v-btn class="btnLogin" rounded color="primary" v-on:click="logIn()">Login</v-btn>
+          <v-btn class="btnLogin" rounded color="primary" v-on:click="verifyLoginData()">Login</v-btn>
         </v-card>
         <div class="login">
           <h2>Hello!</h2>
@@ -50,62 +44,52 @@ import { router } from "../router";
 export default {
   data() {
     return {
-      nameLog: "",
-      passLog: "",
+      mailLoginPatient: "",
+      passLoginPatient: "",
       hidden: false,
-      persID: "",
       dialogLogIn: false,
       popUptxt: "",
-      logUserRules: [
-        v => !!v || "Username is required",
-        v => v.length >= 4 || "Username must be at least 4 characters"
+       mailRulesPatient: [
+        v => !!v || "E-mail is required",
+        v => /.+@.+/.test(v) || "E-mail must be valid"
       ],
-      logPassRules: [
+      passRulesPatient: [
         v => !!v || "Password is required",
         v => v.length >= 8 || "Password must be at least 8 characters"
-      ],
-      logIDRules: [
-        v => !!v || "Personnel ID is required",
-        v => v.length >= 9 || "Personnel ID must be 9 digits",
-        v => v.length < 10 || "Personnel ID must be 9 digits"
       ]
     };
   },
   methods: {
-    logIn() { 
+    verifyLoginData() { 
       if (
-        this.nameLog.length < 3 ||
-        this.passLog.length < 8 ||
-        this.persID.length < 9
+        this.passLoginPatient.length < 8 
       ) {
         this.dialogLogIn = !this.dialogLogIn;
         this.popUptxt = "Invalid data!";
       } else {
         axios
-          .post("/api/login", {
-            username: this.nameLog,
-            password: this.passLog,
-            persId: this.persID
+          .post("/api/loginPatient", {
+            mail: this.mailLoginPatient,
+            password: this.passLoginPatient
           })
           .then(
             response => {
               if (typeof response.data === "object") {
                 this.popUptxt = "Login successfully!";
-                this.nameLog = null;
-                this.passLog = null;
-                this.persID = null;
-                
+                this.mailLoginPatient = null;
+                this.passLoginPatient = null;
+
                 localStorage.setItem(
-                  "userData_username",
-                  response.data.username
+                  "userData_name",
+                  response.data.name 
                 ); // save user data in browser till the browser is close
-                localStorage.setItem("userData_name", response.data.name);
+                localStorage.setItem("userData_age", response.data.age);
                 localStorage.setItem(
                   "userData_password",
                   response.data.password
                 );
                 localStorage.setItem("userData_mail", response.data.mail);
-                localStorage.setItem("userData_persId", response.data.persId);
+                localStorage.setItem("userData_phone", response.data.phone);
                 localStorage.setItem("isLogged", "true");
                 console.log(localStorage.getItem("userData_name"));
               } else {
@@ -124,19 +108,19 @@ export default {
     LogInOk() {
       this.dialogLogIn = false;
       if (this.popUptxt == "Login successfully!") {
-        console.log("Meeeeeeeeeeeeeeeeow");
-        router.push("/History");
+        console.log("Meeeeeeeeeeeeeeeeow"); //Mesaje numai pentru noi sa verificam se ajunge pe aici pentru debugging
+        router.push("/Enroll");
       }
     },
 
-    mounted() {
-      (this.nameLog = ""), (this.passLog = ""), (this.persID = "");
-    },
-    watch: {
-      $route(to, from) {
-        (this.nameLog = ""), (this.passLog = ""), (this.persID = "");
-      }
-    }
+    // mounted() {
+    //   (this.mailLoginPatient = ""), (this.passLoginPatient = "");
+    // },
+    // watch: {
+    //   $route(to, from) {
+    //     (this.mailLoginPatient = ""), (this.passLoginPatient = "");
+    //   }
+    // }
   }
 };
 </script>
@@ -166,7 +150,7 @@ export default {
 .loginCard {
   margin-left: 70px;
   margin-top: auto;
-  /* margin-bottom: auto; */
+  margin-bottom: auto; 
 }
 .loginCard h2 {
   font-family: "Roboto", sans-serif;

@@ -1,8 +1,8 @@
 <template>
   <v-navigation-drawer permanent class="align">
-    <h2 class="fast">Medical</h2>
+    <h2 class="medical">Medical</h2>
     <v-divider></v-divider>
-    <v-list v-for="item in route" :key="item.name" class="alignBtnFAST">
+    <v-list v-for="item in route" :key="item.name" class="alignBtnMedical">
       <v-list-tile>
         <v-list-tile-content>
           <v-btn class="button" elevation="7" color="#bb0000" v-on:click="routeTo(item.path)">
@@ -23,6 +23,7 @@ export default {
     return {
       route: [
         //vector de obiecte
+        //Aici trebuie sa apara doar cele pe care le vrem in meniu; In router.js trebuie sa apara toate
         {
           name: "Home", //denumim paginile; am ales sa le dau un nume cat se poate de explicit
           path: "/" //denumim adresa de o sa apara in link ex "localhost blabla /Home"
@@ -38,6 +39,22 @@ export default {
         {
           name: "Doctor Login",
           path: "/DoctorLogin"
+        },
+        {
+          name: "Enroll",
+          path: "/Enroll"
+        },
+        {
+          name: "History",
+          path: "/History"
+        },
+        {
+          name:"Medical Check",
+          path:"/MedicalCheck"
+        },
+        {
+          name:"Patients",
+          path:"/Patients"
         }
       ]
     };
@@ -61,7 +78,7 @@ export default {
   /* align-content: center!important; */
   align-items: center !important;
 }
-.fast {
+.medical {
   width: 100%;
   text-align: center;
   color: brown;
@@ -71,7 +88,7 @@ export default {
 .button {
   width: 100%;
 }
-.alignBtnFAST {
+.alignBtnMedical {
   margin-top: 10px;
 }
 </style>

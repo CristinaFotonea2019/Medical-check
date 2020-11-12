@@ -7,37 +7,37 @@
             <h2>Register</h2>
           </div>
           <v-text-field
-            :rules="nameRules"
-            v-model="nameReg"
+            :rules="nameRulesPatient"
+            v-model="nameRegisterPatient" 
             class="reg justify-center"
-            label="Name"
+            label="Enter Name"
+          ></v-text-field> <!-- atribuim fiecarui field/camp/casuta = o variabila, un set de reguli descrise mai jos, o clasa si un text -->
+          <v-text-field
+          :rules="ageRulesPatient"
+          v-model="ageRegisterPatient"
+          class="reg justify-center"
+            label="Enter Age"
+            ></v-text-field>
+              <v-text-field
+              :rules="phoneRulesPatient"
+          v-model="phoneRegisterPatient"
+          class="reg justify-center"
+            label="Enter Phone"
+            ></v-text-field>
+          <v-text-field
+            v-model="mailRegisterPatient"
+            :rules="mailRulesPatient"
+            class="reg justify-center"
+            label="Enter E-mail"
           ></v-text-field>
           <v-text-field
-            v-model="mailReg"
-            :rules="mailRules"
-            class="reg justify-center"
-            label="E-mail"
-          ></v-text-field>
-          <v-text-field
-            v-model="userReg"
-            :rules="userRules"
-            class="reg justify-center"
-            label="Enter Username"
-          ></v-text-field>
-          <v-text-field
-            v-model="passReg"
-            :rules="passRules"
+            v-model="passRegisterPatient"
+            :rules="passRulesPatient"
             class="reg justify-center"
             label="Enter Password"
              :type="hiddenRegister ? 'text' : 'password'"
-          ></v-text-field>
-          <v-text-field
-            v-model="persReg"
-            :rules="persRules"
-            class="reg justify-center"
-            label="Personnel ID"
-          ></v-text-field>
-          <v-btn class="btnRegister" rounded color="primary" v-on:click="register()">Register</v-btn>
+          ></v-text-field> <!-- ascundem parola-->
+          <v-btn class="btnRegister" rounded color="primary" v-on:click="verifyRegisterData()">Register</v-btn> 
         </v-card>
         <div class="register">
           <h2>Welcome!</h2>
@@ -46,9 +46,9 @@
       </v-layout>
     </div>
     <v-dialog v-model="dialog" :max-width="350">
-      <v-card class="popUp" :height="200">
+      <v-card class="popUp" :height="200"> 
         <h3>{{popUpText}}</h3>
-        <v-btn class="btnOk" rounded color="primary" v-on:click="registerOk()">Ok</v-btn>
+        <v-btn class="btnOk" rounded color="primary" v-on:click="registerOk()">Ok</v-btn> <!-- Apare un pop-up in urma apasarii butonului de register cu un info despre register-->
       </v-card>
     </v-dialog>
   </v-layout>
@@ -61,94 +61,91 @@ import axios from "axios";
 export default {
   data() {
     return {
-      nameReg: "",
-      mailReg: "",
-      userReg: "",
-      passReg: "",
-      persReg: "",
+      nameRegisterPatient: "",
+      ageRegisterPatient: "",
+      phoneRegisterPatient:"", 
+      mailRegisterPatient: "",
+      passRegisterPatient: "", //Declarare variabile folosite pentru datele de register
       hiddenRegister: false,
       dialog: false,
       popUpText: "",
-      nameRules: [
+      nameRulesPatient: [
         v => !!v || "Name is required",
-        v => v.length >= 3 || "Name must be at least 3 characters"
+        v => v.length >= 3 || "Name must be at least 3 characters" //declarare reguli pentru a ne asigura ca nu primim date eronate/false/etc
+      ], 
+      ageRulesPatient:[
+         v => !!v || "Age is required",
+        v => v.length >= 2|| "Age must be 2-3 digits",
+        v => v.length <= 3 || "Age must be 2-3 digits"
       ],
-      mailRules: [
+       phoneRulesPatient: [
+        v => !!v || "Phone number is required",
+        v => v.length >= 10 || "Phone number must be 10 digits",
+        v => v.length < 11 || "Phone number must be 10 digits"
+      ],
+      mailRulesPatient: [
         v => !!v || "E-mail is required",
         v => /.+@.+/.test(v) || "E-mail must be valid"
       ],
-      userRules: [
-        v => !!v || "Username is required",
-        v => v.length >= 8 || "Username must be at least 8 characters"
-      ],
-      passRules: [
+      passRulesPatient: [
         v => !!v || "Password is required",
         v => v.length >= 8 || "Password must be at least 8 characters"
-      ],
-      persRules: [
-        v => !!v || "Personnel ID is required",
-        v => v.length >= 9 || "Personnel ID must be 9 digits",
-        v => v.length < 10 || "Personnel ID must be 9 digits"
       ]
     };
   },
-  mounted() {
-    (this.nameReg = ""),
-      (this.mailReg = ""),
-      (this.userReg = ""),
-      (this.passReg = ""),
-      (this.persReg = "");
-  },
-  watch: {
-    $route(to, from) {
-      (this.nameReg = ""),
-        (this.mailReg = ""),
-        (this.userReg = ""),
-        (this.passReg = ""),
-        (this.persReg = "");
-    }
-  },
+  // mounted() {
+  //   (this.nameRegisterPatient = ""),
+  //   (this.ageRegisterPatient = ""),
+   //   (this.phoneRegisterPatient = ""),
+  //     (this.mailRegisterPatient = ""),
+  //     (this.passRegisterPatient = ""),
+  // },
+  // watch: {
+  //   $route(to, from) {
+  //   (this.nameRegisterPatient = ""),
+  //   (this.ageRegisterPatient = ""),
+   //   (this.phoneRegisterPatient = ""),
+  //     (this.mailRegisterPatient = ""),
+  //     (this.passRegisterPatient = ""),
+  //   }
+  // },
   methods: {
-    register() {
+    verifyRegisterData() { //Functia de verificare ca regulile se respecta
       if (
-        this.nameReg.length < 4 ||
-        this.userReg.length < 8 ||
-        this.passReg.length < 8 ||
-        this.persReg.length != 9
+        this.nameRegisterPatient.length < 4 || //Daca nu se respecta
+        this.ageRegisterPatient.length < 2 ||
+        this.ageRegisterPatient.length > 4 ||
+        this.phoneRegisterPatient.length != 10 ||
+        this.passRegisterPatient.length < 8 
       ) {
-        this.dialog = !this.dialog;
+        this.dialog = !this.dialog; //Datele ssunt invalide
         this.popUpText = "Invalid data!";
-      } else {
+      } else { //Daca se respecta formatul datelor
         axios
-          .post("/api/register", {
-            name: this.nameReg,
-            mail: this.mailReg,
-            username: this.userReg,
-            password: this.passReg,
-            persId: this.persReg
+          .post("/api/registerPatient", { //se apeleaza API-ul destinat inregistrarii datelor in DB
+            name: this.nameRegisterPatient, //Se atribuie variabilele din "front-end" unor variabile din back-end pentru a putea fi procesate mai departe
+            age: this.ageRegisterPatient,
+            phone:this.phoneRegisterPatient,
+            mail: this.mailRegisterPatient,
+            password: this.passRegisterPatient,
           })
-          .then(
+          .then( //Daca primesc de la backend ca e totul ok atunci inregistrare cu succes
             response => {
               console.log(response);
 
               this.popUpText = "Registration complete!";
             },
-            error => {
+            error => { //Altfel e eroare de server
               console.log(error);
 
               this.popUpText = "Server error!";
             }
           );
-        // .catch(function(error) {
-        //   console.log(error);
-
-        //   this.popUpText="Server error!";
-        // });
         this.dialog = !this.dialog;
       }
     },
     registerOk() {
-      this.dialog = false;
+      this.dialog = false; //variabila sa dispara pop-ul cu info despre register
     }
   }
 };
@@ -180,7 +177,7 @@ export default {
 .registerCard {
   margin-left: 70px;
   margin-top: auto;
-  /* margin-bottom: auto; */
+  margin-bottom: auto; 
 }
 .registerCard h2 {
   font-family: "Roboto", sans-serif;

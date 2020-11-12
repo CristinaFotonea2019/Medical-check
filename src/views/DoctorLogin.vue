@@ -8,25 +8,25 @@
             <h2>Login</h2>
           </div>
           <v-text-field
-            :rules="logUserRules"
-            v-model="nameLog"
+            :rules="mailRulesDoc"
+            v-model="mailLoginDoc"
             class="log justify-center"
-            label="Enter Username"
+            label="Enter E-mail"
           ></v-text-field>
           <v-text-field
-            :rules="logPassRules"
-            v-model="passLog"
+            :rules="passRulesDoc"
+            v-model="passLoginDoc"
             class="log justify-center"
             label="Enter Password"
             :type="hidden ? 'text' : 'password'"
           ></v-text-field>
           <v-text-field
-            :rules="logIDRules"
-            v-model="persID"
+            :rules="IDRulesDoc"
+            v-model="persIDLoginDoc"
             class="log justify-center"
-            label="Personnel ID"
+            label=" Enter Personnel ID"
           ></v-text-field>
-          <v-btn class="btnLogin" rounded color="primary" v-on:click="logIn()">Login</v-btn>
+          <v-btn class="btnLogin" rounded color="primary" v-on:click="verifyLoginData()">Login</v-btn>
         </v-card>
         <div class="login">
           <h2>Hello!</h2>
@@ -50,21 +50,21 @@ import { router } from "../router";
 export default {
   data() {
     return {
-      nameLog: "",
-      passLog: "",
+      mailLoginDoc: "",
+      passLoginDoc: "",
+      persIDLoginDoc: "",
       hidden: false,
-      persID: "",
       dialogLogIn: false,
       popUptxt: "",
-      logUserRules: [
-        v => !!v || "Username is required",
-        v => v.length >= 4 || "Username must be at least 4 characters"
+      mailRulesDoc: [
+        v => !!v || "E-mail is required",
+        v => /.+@.+/.test(v) || "E-mail must be valid"
       ],
-      logPassRules: [
+      passRulesDoc: [
         v => !!v || "Password is required",
         v => v.length >= 8 || "Password must be at least 8 characters"
       ],
-      logIDRules: [
+      IDRulesDoc: [
         v => !!v || "Personnel ID is required",
         v => v.length >= 9 || "Personnel ID must be 9 digits",
         v => v.length < 10 || "Personnel ID must be 9 digits"
@@ -72,34 +72,32 @@ export default {
     };
   },
   methods: {
-    logIn() { 
+    verifyLoginData() { 
       if (
-        this.nameLog.length < 3 ||
-        this.passLog.length < 8 ||
-        this.persID.length < 9
+        this.passLoginDoc.length < 8 ||
+        this.persIDLoginDoc.length < 9
       ) {
         this.dialogLogIn = !this.dialogLogIn;
         this.popUptxt = "Invalid data!";
       } else {
         axios
-          .post("/api/login", {
-            username: this.nameLog,
-            password: this.passLog,
-            persId: this.persID
+          .post("/api/loginDoctor", {
+            username: this.mailLoginDoc,
+            password: this.passLoginDoc,
+            persId: this.persIDLoginDoc
           })
           .then(
             response => {
               if (typeof response.data === "object") {
                 this.popUptxt = "Login successfully!";
-                this.nameLog = null;
-                this.passLog = null;
-                this.persID = null;
+                this.mailLoginDoc = null;
+                this.passLoginDoc = null;
+                this.persIDLoginDoc = null;
                 
                 localStorage.setItem(
-                  "userData_username",
-                  response.data.username
+                  "userData_name",
+                  response.data.name
                 ); // save user data in browser till the browser is close
-                localStorage.setItem("userData_name", response.data.name);
                 localStorage.setItem(
                   "userData_password",
                   response.data.password
@@ -125,18 +123,18 @@ export default {
       this.dialogLogIn = false;
       if (this.popUptxt == "Login successfully!") {
         console.log("Meeeeeeeeeeeeeeeeow");
-        router.push("/History");
+        router.push("/Patients");
       }
     },
 
-    mounted() {
-      (this.nameLog = ""), (this.passLog = ""), (this.persID = "");
-    },
-    watch: {
-      $route(to, from) {
-        (this.nameLog = ""), (this.passLog = ""), (this.persID = "");
-      }
-    }
+    // mounted() {
+    //   (this.mailLoginDoc = ""), (this.passLoginDoc = ""), (this.persIDLoginDoc = "");
+    // },
+    // watch: {
+    //   $route(to, from) {
+    //     (this.mailLoginDoc = ""), (this.passLoginDoc = ""), (this.persIDLoginDoc = "");
+    //   }
+    // }
   }
 };
 </script>
