@@ -82,9 +82,9 @@ export default {
       } else {
         axios
           .post("/api/loginDoctor", {
-            username: this.mailLoginDoc,
-            password: this.passLoginDoc,
-            persId: this.persIDLoginDoc
+            server_mailDoctors: this.mailLoginDoc,
+            server_passwordDoctors: this.passLoginDoc,
+            server_persIdDoctor: this.persIDLoginDoc
           })
           .then(
             response => {
@@ -123,18 +123,18 @@ export default {
       this.dialogLogIn = false;
       if (this.popUptxt == "Login successfully!") {
         console.log("Meeeeeeeeeeeeeeeeow");
-        router.push("/Patients");
+        router.push("/Enroll");
       }
     },
 
-    // mounted() {
-    //   (this.mailLoginDoc = ""), (this.passLoginDoc = ""), (this.persIDLoginDoc = "");
-    // },
-    // watch: {
-    //   $route(to, from) {
-    //     (this.mailLoginDoc = ""), (this.passLoginDoc = ""), (this.persIDLoginDoc = "");
-    //   }
-    // }
+    mounted() {
+      (this.mailLoginDoc = ""), (this.passLoginDoc = ""), (this.persIDLoginDoc = "");
+    },
+    watch: {
+      $route(to, from) {
+        (this.mailLoginDoc = ""), (this.passLoginDoc = ""), (this.persIDLoginDoc = "");
+      }
+    }
   }
 };
 </script>

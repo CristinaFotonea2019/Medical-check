@@ -13,99 +13,64 @@ console.log('server started ' + port);
 var connection;
 var mysql = require('mysql')
 
-// Register WEB Begin
-app.post('/api/register', function (req, response) {
+// Register Patient WEB Begin
+app.post('/api/registerPatient', function (req, response) {
   response.send("Register");
-  insertpeople(req.body.name, req.body.mail, req.body.username, req.body.password, req.body.persId);
+  insertpeople(req.body.server_namePatient, req.body.server_agePatient, req.body.server_phonePatient, req.body.server_mailPatient, req.body.server_passwordPatient);
 });
 
-function insertpeople(name, mail, username, password, persId) {
-  var hashPass = passwordHash.generate(password);
+function insertpeople(server_namePatient, server_agePatient, server_phonePatient, server_mailPatient, server_passwordPatient) {
+  var hashPass = passwordHash.generate(server_passwordPatient);
   console.log(hashPass);
   var save_result
-  connection.query("INSERT INTO users(name,mail,username,password,persId) VALUES('" + name + "','" + mail + "','" + username + "','" + hashPass + "','" + persId + "')", function (err, result2) {
+  connection.query("INSERT INTO patients(patients_name, patients_age, patients_phone,patients_mail,patients_password) VALUES('" + server_namePatient + "','" + server_agePatient + "','" + server_phonePatient + "','" + server_mailPatient +"','"+ hashPass + "')", function (err, result2) {
     if (err) throw err
     save_result = result2;
     console.log('The solution is1: ', result2)
   })
 
 }
-// Register WEB End 
+// Register Patient WEB End 
 
-// Insert Crash alert WEB Begin
-function insertcrash(car_nr, car_owner, car_crashSensor, car_GPS, car_temperatureSensor, car_fireSensor, car_EmergencyPerson, car_date) {
-
-  var save_result_car
-  connection.query("INSERT INTO car_data(car_nr, car_owner, car_crashSensor, car_GPS, car_temperatureSensor,car_fireSensor,car_EmergencyPerson,car_date) VALUES('" + car_nr + "','" + car_owner + "','" + car_crashSensor + "','" + car_GPS + "','" + car_temperatureSensor + "','" + car_fireSensor + "','" + car_EmergencyPerson + "','" + car_date + "')", function (err, resultcar) {
-    if (err) throw err
-    save_result_car = resultcar;
-    console.log('The solution is: ', resultcar)
-  })
-  connection.query("INSERT INTO car_data_backup(car_nr, car_owner, car_crashSensor, car_GPS, car_temperatureSensor,car_fireSensor,car_EmergencyPerson,car_date) VALUES('" + car_nr + "','" + car_owner + "','" + car_crashSensor + "','" + car_GPS + "','" + car_temperatureSensor + "','" + car_fireSensor + "','" + car_EmergencyPerson + "','" + car_date + "')", function (err, resultcar) {
-    if (err) throw err
-    save_result_car = resultcar;
-    console.log('The solution is: ', resultcar)
-  })
-
-}
-
-app.post('/api/addCrashEvent', function (req, response) {
-  response.send("Added successfully!");
-  insertcrash(req.body.car_nr, req.body.car_owner, req.body.car_crashSensor, req.body.car_GPS, req.body.car_temperatureSensor, req.body.car_fireSensor, req.body.car_EmergencyPerson, req.body.car_date);
+// Register Medical Check WEB Begin
+app.post('/api/registerMedicalData', function (req, response) {
+  response.send("Register");
+  insertpeople(req.body.server_name, req.body.server_age, req.body.server_phone, req.body.server_pulse, req.body.server_saturationO2,req.body.server_diseases);
 });
-// Insert Crash alert WEB End
 
-// Delete Crash alert WEB Begin
-function deleteCrash(idcar) {
-  var save_result_car
-  connection.query("DELETE FROM car_data WHERE idcar=" + idcar, function (err, resultcar) {
-    if (err) throw err
-    save_result_car = resultcar;
-    console.log('The solution is: ', resultcar)
-  })
-}
-app.post('/api/deleteCarEvents', function (req, response) {
-  response.send("Event sters");
-  deleteCrash(req.body.idcar);
-});
-// Delete Crash alert WEB End
-
-// Delete User alert WEB Begin
-function deleteUser(persId) {
-  var save_result_user
-  connection.query("DELETE FROM users WHERE persId=" + persId, function (err, resultUser) {
-    if (err) throw err
-    save_result_user = resultUser;
-    console.log('The solution is: ', resultUser)
-  })
-}
-app.post('/api/deleteUser', function (req, response) {
-  response.send("User sters");
-  deleteUser(req.body.persId);
-});
-// Delete User alert WEB End
-
-// Login WEB Begin
-app.post('/api/login', function (req, response) {
+function insertpeople(server_name, server_age, server_phone, server_pulse, server_saturationO2,server_diseases) {
   var save_result
-  connection.query("SELECT * from users WHERE persId='" + req.body.persId + "'", function (err, rows, result2) {
+  connection.query("INSERT INTO history(history_name, history_age, history_phone,history_pulse,history_oxygen,history_diseases) VALUES('" + server_name + "','" + server_age + "','" + server_phone + "','" + server_pulse +"','"+ server_saturationO2 +  "','"+ server_diseases + "')", function (err, result2) {
+    if (err) throw err
+    save_result = result2;
+    console.log('The solution is1: ', result2)
+  })
+
+}
+// Register Medical Check WEB End 
+
+
+
+// Login Patient Medical Check WEB Begin
+app.post('/api/loginPatient', function (req, response) {
+  var save_result
+  connection.query("SELECT * from patients WHERE patients_mail='" + req.body.server_mailPatient + "'", function (err, rows, result2) {
     if (err) throw err
     save_result = result2;
 
     console.log(rows.length);
     if (rows.length == 1) { //verify personel ID
-      var hashedPassword = passwordHash.generate(req.body.password);
+      var hashedPassword = passwordHash.generate(req.body.server_passwordPatient);
       console.log(hashedPassword);
-      console.log(rows[0].password);
-      if (rows[0].username == req.body.username && (passwordHash.verify(req.body.password, rows[0].password))) { //verify user and pass
-        console.log(rows[0].username);
-        console.log(rows[0].password);
+      console.log(rows[0].patients_password);
+      console.log(req.body.server_passwordPatient);
+
+      if (rows[0].patients_mail == req.body.server_mailPatient && (passwordHash.verify(req.body.server_passwordPatient, rows[0].patients_password))) { //verify user and pass
+        console.log(rows[0].patients_mail);
+        console.log(rows[0].patients_password);
         userData = {}; //object
-        userData.username = rows[0].username; //save data in obj userData
-        userData.password = rows[0].password;
-        userData.persId = rows[0].persId;
-        userData.name = rows[0].name;
-        userData.mail = rows[0].mail;
+        userData.mail = rows[0].patients_mail; //save data in obj userData
+        userData.password = rows[0].patients_password;
         console.log("True");
         response.send(userData);
       }
@@ -126,7 +91,47 @@ app.get('/api/loginData', (request, result) => {
     data: "test"
   })
 })
-// Login WEB End
+// Login Patient Medical Check WEB End
+
+// Login Doctor Medical Check WEB Begin
+app.post('/api/loginDoctor', function (req, response) {
+  var save_result
+  connection.query("SELECT * from doctors WHERE doctors_persID ='" + req.body.server_persIdDoctor + "'", function (err, rows, result2) { // efectiv comanda utilizata pe baza de date
+    if (err) throw err
+    save_result = result2;
+
+    console.log(rows.length);
+    if (rows.length == 1) { //verify personel ID
+      console.log(rows[0].doctors_password);
+      console.log(req.body.server_passwordDoctors);
+      console.log(rows[0].doctors_mail);
+      console.log(req.body.server_mailDoctors);
+      if ((rows[0].doctors_mail == req.body.server_mailDoctors) && (req.body.server_passwordDoctors== rows[0].doctors_password)) { //verify mail  and pass
+        userData = {}; //object
+        userData.mail = rows[0].doctors_mail; //save data in obj userData
+        userData.password = rows[0].doctors_password;
+        console.log("True");
+        response.send(userData);
+        console.log("True");
+      }
+      else {
+        response.send("Username or password invalid!")
+      }
+    }
+    else {
+      console.log("False");
+      response.send("Doesn't exist!");
+    }
+  })
+
+});
+app.get('/api/loginData', (request, result) => {
+
+  result.status(200).send({
+    data: "test"
+  })
+})
+// Login Doctor Medical Check WEB End
 
 // Contact WEB Begin
 
@@ -160,10 +165,10 @@ app.post('/api/mailcontacts', function (req, response) {
 });
 // Contact WEB End
 
-//Car Events WEB Begin
-app.post('/api/getCrashEvents', function (req, response) {
+//History Patient WEB Begin
+app.post('/api/getHistoryPatient', function (req, response) {
   var save_resultcrash
-  connection.query("SELECT * from car_data", function (err, rows, resultcarcrash) {
+  connection.query("SELECT * from history ", function (err, rows, resultcarcrash) {
     if (err) throw err
     save_resultcrash = resultcarcrash;
     response.send(rows);
@@ -171,85 +176,40 @@ app.post('/api/getCrashEvents', function (req, response) {
 
 });
 
-//Car Events WEB End
+//History Patient WEB End
+//List Patients WEB Begin
+app.post('/api/getPatientsList', function (req, response) {
+  var save_resultcrash
+  connection.query("SELECT * from patients", function (err, rows, resultcarcrash) {
+    console.log("Get List Patients WEB");
+    console.log(rows[0].patients_name);
+    userData = {}; //object
+        userData.name = rows[0].patients_name; //save data in obj userData
+        userData.age = rows[0].patients_age;
+        userData.phone = rows[0].patients_phone;
 
-// Mobile Register Begin 
-
-app.post('/api/registermobile', (req, response) => {
-  var hashPass_mobile = passwordHash.generate(req.body.mobileUser_pass);
-  console.log(hashPass_mobile);
-  var save_result
-  connection.query("INSERT INTO users_mobile(mobile_name, mobile_age, mobile_carNr, mobile_emergy, mobile_mail, mobile_pass) VALUES('" + req.body.mobileUser_name + "','" + req.body.mobileUser_age + "','" + req.body.mobileUser_carNr + "','" + req.body.mobileUser_emergy + "','" + req.body.mobileUser_mail + "','" + hashPass_mobile + "')", function (err, result2) {
+        response.send(userData);
+        console.log("True");
     if (err) throw err
-    save_result = result2;
-    console.log('The solution is1: ', result2)
-    response.send("Register successfully");
+    save_resultcrash = resultcarcrash;
+    // response.send(rows);
   })
 
-
-});
-//  Mobile Register End
-
-//Mobile Login Start
-app.post('/api/loginmobile', function (req, response) {
-  var save_result
-  // console.log(req);
-  // console.log("meow " +req.body);
-  // console.log("da "+ JSON.stringify(req.body));
-  connection.query("SELECT * from users_mobile WHERE mobile_mail='" + req.body.mobileUser_mail + "'", function (err, rows, result2) {
-    if (err) throw err
-    save_result = result2;
-
-    console.log(rows.length);
-    if (rows.length == 1) { //verify personel ID
-      var hashedPassword_Mobile = passwordHash.generate(req.body.mobileUser_pass);
-      console.log(hashedPassword_Mobile);
-      console.log(rows[0].mobile_pass);
-      if (rows[0].mobile_mail == req.body.mobileUser_mail && (passwordHash.verify(req.body.mobileUser_pass, rows[0].mobile_pass))) { //verify user and pass
-        console.log(rows[0].mobile_mail);
-        console.log(rows[0].mobile_pass);
-        userData_Mobile = {}; //object
-        userData_Mobile.mobile_name = rows[0].mobile_name;
-        userData_Mobile.mobile_age = rows[0].mobile_age;
-        userData_Mobile.mobile_carNr = rows[0].mobile_carNr;
-        userData_Mobile.mobile_emergy = rows[0].mobile_emergy;
-        userData_Mobile.mobile_mail = rows[0].mobile_mail; //save data in obj userData
-        userData_Mobile.mobile_pass = rows[0].mobile_pass;
-        console.log("True");
-        response.send(userData_Mobile);
-      }
-      else {
-        response.send("Username or password invalid!")
-      }
-    }
-    else {
-      console.log("False");
-      response.send("Doesn't exist!");
-    }
-  });
 });
 
-//Mobile Login End
+//List Patients WEB End
 
-//Mobile User Delete Begin
 
-app.post('/api/mobiledeleteUser', function (req, response) {
-  var save_result_user
-  connection.query("DELETE FROM users_mobile WHERE mobile_carNr = '" + req.body.mobile_carNr + "'", function (err, resultUser) {
-    if (err) throw err
-    save_result_user = resultUser;
-    console.log('The solution is: ', resultUser)
-    response.send("User sters");
-  });
-});
-//Mobile User Delete End
+
+
+
 
 function handleDisconnect() {
   connection = mysql.createConnection({
-    host: 'eu-cdbr-west-02.cleardb.net',
-    user: 'b9c321f36dafbe',
-    password: 'f0d505ac',
-    database: 'heroku_4f013f001ff2cdc'
+    host: 'eu-cdbr-west-03.cleardb.net',
+    user: 'bdbf67a3efdb8a',
+    password: '0c36a25b',
+    database: 'heroku_d7cc3eb93a568fd'
   }) // Recreate the connection, since
   // the old one cannot be reused.
 

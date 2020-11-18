@@ -1,164 +1,267 @@
 <template>
-  <v-layout align-space-between justify-space-between column fill-height>
-    <div
-      class="background"
-      :style="{'background-image':'url('+require('../assets/Contact.png')+')'}"
-    >
+  <v-layout
+    align-space-around
+    justify-start
+    column
+    fill-height
+    class="backSensors"
+    :style="{'background-image':'url('+require('../assets/Sensors.png')+')'}"
+  >
+    <div class="header">
       <v-layout align-center justify-space-between row fill-height>
-        <div class="contactClss">
-          <h2>Get in Touch</h2>
-          <div class="contactText">
-            <!--persoane-->
-          </div>
-        </div>
-        <v-card :height="430" :width="300" class="send" elevation="15">
-          <h2>SAY SOMETHING</h2>
-          <v-text-field
-            outlined
-            :rules="titleRulesRecom"
-            v-model="titleRecom"
-            class="sendMsg justify-center"
-            label="Name"
-          ></v-text-field>
-          <v-textarea
-            outlined
-            v-model="mesajRecom"
-            no-resize
-            class="sendMsg justify-center"
-            label="Message"
-          ></v-textarea>
-          <v-btn class="btnSend" rounded color="primary" v-on:click="sendmail()">SEND</v-btn>
-        </v-card>
+        <h2 class="textAlert">Patients List</h2>
+        <v-btn class="btnUser" v-on:click="User()">
+        </v-btn>
       </v-layout>
     </div>
-    <v-dialog v-model="dialogContact" :max-width="350">
-      <v-card class="popUp" :height="200">
-        <h3>{{popUpTxt}}</h3>
-        <v-btn class="btnok" rounded color="primary" v-on:click="sendOk()">Ok</v-btn>
+    <div class="alignData">
+      <v-list v-for="item in historyData" :key="item.name" class="listHistory">
+        <v-list-tile>
+          <v-list-tile-content class="listAlign" v-on:click="Details(item)">
+            <v-spacer />
+            <h2>{{item.namePatientsList}}</h2>
+            <v-spacer />
+            <h2>{{item.agePatientsList}}</h2>
+            <v-spacer />
+            <h2>{{item.phonePatientsList}}</h2>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </div>
+
+    <v-dialog v-model="dialogHistory" :max-width="400">
+      <v-card class="popUpUser">
+        <h3>User info</h3>
+        <center>
+          <v-text-field v-model="namePatientsList" class="log justify-center resizeHistory" disabled></v-text-field>
+          <v-text-field v-model="agePatientsList" class="log justify-center resizeHistory" disabled></v-text-field>
+          <v-text-field v-model="phonePatientsList" class="log justify-center resizeHistory" disabled></v-text-field>
+        </center>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogDetailsEvent" :max-width="350">
+      <v-card class="carCrashDetails" :height="400">
+        <h1>Details</h1>
+        <h2>Nume: <b>{{namePatientsList}} </b></h2>
+        <h2> Varsta: <b> {{agePatientsList}}</b></h2>
+        <h2> Numar de telefon: <b>{{phonePatientsList}}</b></h2>
+      </v-card>
+    </v-dialog>
+
+        <!-- Aici o sa fie datele pe care le afiseaza din baza de date despre fiecare pacient-->
+ 
   </v-layout>
 </template>
-
-
 <script>
-/* eslint-disable*/
-import axios from "axios";
+/* eslint-disable */
 import { router } from "../router";
+import axios from "axios";
+import { setInterval } from "timers";
 export default {
   data() {
     return {
-      titleRecom: "",
-      mesajRecom: "",
-      dialogContact: false,
-      popUpTxt: "",
-      titleRulesRecom: [
-        v => !!v || "Name is required",
-        v => v.length >= 3 || "Name must be at least 3 characters"
-      ]
+      popUpUser: "",
+      dialogHistory: false,
+      namePatientsList: "",
+      agePatientsList:"",
+      phonePatientsList: "",
+      detailsFlag: true,
+      dialogDeleteEvent: false,
+      deleteText: "",
+      
+      historyData: []
     };
   },
   methods: {
-    sendmail() {
-      if (
-        this.titleRecom.length < 3 ||
-        this.mesajRecom.length < 8
-      ) {
-        this.dialogContact = !this.dialogContact;
-        this.popUpTxt = "Invalid data!";
-      } else {
-        axios
-          .post("/api/mailcontacts", {
-            name: this.titleRecom,
-            mesaj: this.mesajRecom
-          })
-          .then(
-            response => {
-              console.log(response);
-
-              this.popUpTxt = "Mail sent!";
-              this.titleRecom = null;
-              this.mesajRecom = null;
-            },
-            error => {
-              console.log(error);
-
-              this.popUpTxt = "Server error!";
-            }
-          );
-        this.dialogContact = !this.dialogContact;
-      }
+ User() {
+      this.namePatientsList = localStorage.getItem("userData_name");
+      this.agePatientsList = localStorage.getItem("userData_age");
+      this.phonePatientsList = localStorage.getItem("userData_phone");
+      this.dialogHistory = !this.dialogHistory;
     },
-    sendOk() {
-      this.dialogContact = false;
+   
+    Details(item) {
+      console.log("Detalii aiciiiiiii");
+      setTimeout(() => {
+        if (this.dialogDeleteEvent == false) {
+          this.namePatientsList = item.namePatientsList;
+          this.agePatientsList=item.agePatientsList;
+          this.phonePatientsList = item.phonePatientsList;
+        } else {
+          
+        }
+      }, 100);
+
+      console.log("Detalii");
     }
   },
-  // mounted() {
-  //   this.titleRecom = "";
-  //   this.mesajRecom = "";
-  // },
-  // watch: {
-  //   $route(to, from) {
-  //     this.titleRecom = "";
-  //     this.mesajRecom = "";
-  //   }
-  // }
+  mounted() {
+    console.log("Mounted");
+    setInterval(() => {
+      axios.post("/api/getPatientsList").then(
+        response => {
+          console.log(this.historyData.length + " " + response.data.length);
+          console.log("de ce");
+          console.log(this.historyData);
+          console.log(response.data);
+          if (this.historyData.length < response.data.length) {
+            console.log("if");
+            if (this.historyData.length == 0) {
+              response.data.forEach(element => {
+                console.log("Orice2");
+                this.historyData.push(element);
+              });
+            } else {
+              console.log("Else");
+              for (
+                let index = this.historyData.length;
+                index < response.data.length;
+                index++
+              ) {
+                console.log("push");
+                this.historyData.push(response.data[index]);
+              }
+            }
+          }
+          console.log("history");
+          console.log(this.historyData);
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }, 1500);
+  },
+  watch: {
+    $route(to, from) {
+      console.log("Routed");
+    }
+  }
 };
 </script>
-
-
 <style>
-/* @import url("https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500&display=swap"); */
-.background {
-  height: 100%;
-  /* background-image: url(https://scontent.ftsr1-1.fna.fbcdn.net/v/t1.15752-9/69380368_483731745757002_388805131400904704_n.png?_nc_cat=111&_nc_oc=AQkZswsosTbTP_Q0IfRxjQCHUxlUzTe4-jBZw8bFKdddQlPscAgTZ9QsxGUVw8Mzmfl4pI5pTYs4e0eGQa0dbmdC&_nc_ht=scontent.ftsr1-1.fna&oh=4e4d5359e9ae02fde7320c0472301c18&oe=5E10210F); */
-  background-size: cover;
-  /* background-color: rgb(122, 8, 8); */
+.header {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  /* background-color: black; */
 }
-.contactClss {
-  height: 100%;
-  margin-top: 30px;
-  margin-left: 50px;
-  /* color: white; */
-}
-.contactClss h2 {
+.titleDashboard {
+  font-size: 2rem;
+  font-weight: 400;
   font-family: "Roboto", sans-serif;
-  font-size: 3rem;
   font-style: italic;
-  font-weight: 200;
+  color: white;
+ margin-left: 800px;
 }
-.contactText {
-  margin-top: 70px;
+.image {
+  width: 20px;
+  height: 20px;
+}
+.imagebtn {
+  width: 25px;
+  height: 25px;
+}
+.btnUser {
+  width: 30px !important;
+  height: 50px !important;
+  margin-right: 200px;
+  font-size: 2rem !important;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+.image {
+  width: 60px;
+  height: 60px;
   margin-left: 20px;
 }
-.contactText h3 {
+.popUpUser {
+  width: 400px;
+  height: 460px;
+}
+.popUpUser h3 {
   text-align: center;
+  font-size: 1.8rem !important;
+  font-weight: 400;
   font-family: "Roboto", sans-serif;
-  font-size: 1.6rem;
-  font-weight: 300;
 }
-.send {
-  margin-right: 200px;
-}
-.sendMsg {
-  width: 250px;
-  margin: auto !important;
-}
-.send h2 {
+.popUpUser h2 {
   text-align: center;
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-  margin-top: 5px;
+  font-size: 1.8rem !important;
+  font-weight: 400;
+  padding: 30px;
   font-family: "Roboto", sans-serif;
-  /* font-style: italic; */
+}
+.btnBack {
+  /* margin-left: 40px; */
+  align-self: center;
+  width: 130px;
+  margin-top: 15px;
+}
+.resizeHistory {
+  width: 300px !important;
+  text-align: center;
+}
+.alignData {
+  height: 50px;
+  width: 80%;
+  margin-top: 80px;
+  align-self: center;
+  /* background-color: red !important; */
+}
+.listAlign {
+  display: flex;
+}
+.listAlign h2 {
+  margin-right: 40px !important;
+  font-size: 1.2rem !important;
+  font-weight: 400;
+  line-height: 39px;
+  text-align: left;
+  width: 30%;
+  height: 39px;
+}
+.listAlign #carOwner {
+  width: 10% !important;
+  margin-left: 20px;
+}
+.btnDelete {
+  margin-left: 20px !important;
+  color: white !important;
+  background-color: brown !important;
+}
+.listHistory {
+  background-color: rgba(245, 245, 245, 0.61) !important;
+  margin-top: 10px;
+}
+.btnAlignRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnDeleteUser {
+  margin-top: 15px;
+  margin-left: 20px;
+}
+.btnDeleteOk{
+  align-self: center;
+  width: 130px;
+  margin-top: 15px;
+  margin-left: 110px;
+}
+.carCrashDetails h1{
+font-size: 2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+  font-style: italic;
+  text-align: center;
+}
+.carCrashDetails h2{
+font-size: 1.2rem;
   font-weight: 300;
-}
-.btnSend {
-  width: 200px;
-  margin-left: 50px;
-}
-.btnok {
-  margin-left: 100px;
-  width: 150px;
+  font-family: "Roboto", sans-serif;
+  font-style: italic;
+  margin-left: 15px;
+  margin-top: 10px;
 }
 </style>

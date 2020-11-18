@@ -102,37 +102,36 @@ export default {
         v => v.length < 3 || "Oxygen Saturation must be 2-3 digits"
       ],
       diseases_RulesPatient : [
-        v => !!v || "Diseases are required",
+        v => !!v || "Diseases are required (None)",
         v => v.length >= 3 || "Must be at least 3 characters (other:None)" //declarare reguli pentru a ne asigura ca nu primim date eronate/false/etc
       ]
      
     };
   },
-  // mounted() {
-  //   (this.nameRegisterPatient = ""),
-  //   (this.ageRegisterPatient = ""),
-   //   (this.phoneRegisterPatient = ""),
-  //     (this.pulse_MedicalCheckPatient = ""),
-  //     (this.saturationO2_MedicalCheckPatient = ""),
-  // (this.diseases_MedicalCheckPatient = ""),
-  // },
-  // watch: {
-  //   $route(to, from) {
-  //   (this.nameRegisterPatient = ""),
-  //   (this.ageRegisterPatient = ""),
-   //   (this.phoneRegisterPatient = ""),
-  //     (this.pulse_MedicalCheckPatient = ""),
-  //     (this.saturationO2_MedicalCheckPatient = ""),
-  // (this.diseases_MedicalCheckPatient = ""),
-  //   }
-  // },
+  mounted() {
+    (this.nameMedicalCheckPatient = ""),
+    (this.ageMedicalCheckPatient = ""),
+     (this.phoneMedicalCheckPatient = ""),
+      (this.pulse_MedicalCheckPatient = ""),
+      (this.saturationO2_MedicalCheckPatient = ""),
+  (this.diseases_MedicalCheckPatient = "")
+  },
+  watch: {
+    $route(to, from) {
+    (this.nameMedicalCheckPatient = ""),
+    (this.ageMedicalCheckPatient = ""),
+     (this.phoneMedicalCheckPatient = ""),
+      (this.pulse_MedicalCheckPatient = ""),
+      (this.saturationO2_MedicalCheckPatient = ""),
+  (this.diseases_MedicalCheckPatient = "")
+    }
+  },
   methods: {
     verifyMedicalData() { //Functia de verificare ca regulile se respecta
       if (
-        this.nameRegisterPatient.length < 4 || //Daca nu se respecta
-        this.ageRegisterPatient.length < 2 ||
-        this.ageRegisterPatient.length > 4 ||
-        this.phoneRegisterPatient.length != 10 ||
+        this.nameMedicalCheckPatient.length < 4 || //Daca nu se respecta
+        this.ageMedicalCheckPatient.length < 2 ||
+        this.phoneMedicalCheckPatient.length != 10 || 
         this.pulse_MedicalCheckPatient.length < 2 ||
         this.pulse_MedicalCheckPatient.length > 4 ||
         this.saturationO2_MedicalCheckPatient.length < 2 ||
@@ -144,12 +143,12 @@ export default {
       } else { //Daca se respecta formatul datelor
         axios
           .post("/api/registerMedicalData", { //se apeleaza API-ul destinat inregistrarii datelor in DB
-            name: this.nameRegisterPatient, //Se atribuie variabilele din "front-end" unor variabile din back-end pentru a putea fi procesate mai departe
-            age: this.ageRegisterPatient,
-            phone:this.phoneRegisterPatient,
-            pulse: this.pulse_MedicalCheckPatient,
-            saturationO2: this.saturationO2_MedicalCheckPatient,
-            diseases:this.diseases_MedicalCheckPatient,
+            server_name: this.nameMedicalCheckPatient, //Se atribuie variabilele din "front-end" unor variabile din back-end pentru a putea fi procesate mai departe
+            server_age: this.ageMedicalCheckPatient,
+            server_phone:this.phoneMedicalCheckPatient,
+            server_pulse: this.pulse_MedicalCheckPatient,
+            server_saturationO2: this.saturationO2_MedicalCheckPatient,
+            server_diseases:this.diseases_MedicalCheckPatient,
           })
           .then( //Daca primesc de la backend ca e totul ok atunci inregistrare cu succes
             response => {
@@ -210,11 +209,13 @@ export default {
   width: 150px;
 }
 .btnLogOut{
-   margin-left: 400px;
+   margin-left: 250px;
+   margin-top: 20px;
   width: 150px;
 }
 .btnHistory{
-     margin-left: 150px;
+     margin-left: 250px;
+        margin-top: 20px;
   width: 150px;
 }
 .popUp h3 {

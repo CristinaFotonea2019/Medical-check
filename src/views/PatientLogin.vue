@@ -69,8 +69,8 @@ export default {
       } else {
         axios
           .post("/api/loginPatient", {
-            mail: this.mailLoginPatient,
-            password: this.passLoginPatient
+            server_mailPatient: this.mailLoginPatient,
+            server_passwordPatient: this.passLoginPatient
           })
           .then(
             response => {
@@ -113,14 +113,14 @@ export default {
       }
     },
 
-    // mounted() {
-    //   (this.mailLoginPatient = ""), (this.passLoginPatient = "");
-    // },
-    // watch: {
-    //   $route(to, from) {
-    //     (this.mailLoginPatient = ""), (this.passLoginPatient = "");
-    //   }
-    // }
+    mounted() {
+      (this.mailLoginPatient = ""), (this.passLoginPatient = "");
+    },
+    watch: {
+      $route(to, from) {
+        (this.mailLoginPatient = ""), (this.passLoginPatient = "");
+      }
+    }
   }
 };
 </script>

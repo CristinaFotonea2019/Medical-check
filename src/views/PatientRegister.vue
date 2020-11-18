@@ -93,22 +93,22 @@ export default {
       ]
     };
   },
-  // mounted() {
-  //   (this.nameRegisterPatient = ""),
-  //   (this.ageRegisterPatient = ""),
-   //   (this.phoneRegisterPatient = ""),
-  //     (this.mailRegisterPatient = ""),
-  //     (this.passRegisterPatient = ""),
-  // },
-  // watch: {
-  //   $route(to, from) {
-  //   (this.nameRegisterPatient = ""),
-  //   (this.ageRegisterPatient = ""),
-   //   (this.phoneRegisterPatient = ""),
-  //     (this.mailRegisterPatient = ""),
-  //     (this.passRegisterPatient = ""),
-  //   }
-  // },
+  mounted() {
+    (this.nameRegisterPatient = ""),
+    (this.ageRegisterPatient = ""),
+     (this.phoneRegisterPatient = ""),
+      (this.mailRegisterPatient = ""),
+      (this.passRegisterPatient = "")
+  },
+  watch: {
+    $route(to, from) {
+    (this.nameRegisterPatient = ""),
+    (this.ageRegisterPatient = ""),
+     (this.phoneRegisterPatient = ""),
+      (this.mailRegisterPatient = ""),
+      (this.passRegisterPatient = "")
+    }
+  },
   methods: {
     verifyRegisterData() { //Functia de verificare ca regulile se respecta
       if (
@@ -123,11 +123,11 @@ export default {
       } else { //Daca se respecta formatul datelor
         axios
           .post("/api/registerPatient", { //se apeleaza API-ul destinat inregistrarii datelor in DB
-            name: this.nameRegisterPatient, //Se atribuie variabilele din "front-end" unor variabile din back-end pentru a putea fi procesate mai departe
-            age: this.ageRegisterPatient,
-            phone:this.phoneRegisterPatient,
-            mail: this.mailRegisterPatient,
-            password: this.passRegisterPatient,
+            server_namePatient: this.nameRegisterPatient, //Se atribuie variabilele din "front-end" unor variabile din back-end pentru a putea fi procesate mai departe
+            server_agePatient: this.ageRegisterPatient,
+            server_phonePatient:this.phoneRegisterPatient,
+            server_mailPatient: this.mailRegisterPatient,
+            server_passwordPatient: this.passRegisterPatient,
           })
           .then( //Daca primesc de la backend ca e totul ok atunci inregistrare cu succes
             response => {
