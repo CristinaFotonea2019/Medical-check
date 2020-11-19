@@ -34,16 +34,16 @@ function insertpeople(server_namePatient, server_agePatient, server_phonePatient
 
 // Register Medical Check WEB Begin
 app.post('/api/registerMedicalData', function (req, response) {
-  response.send("Register");
-  insertpeople(req.body.server_name, req.body.server_age, req.body.server_phone, req.body.server_pulse, req.body.server_saturationO2,req.body.server_diseases);
+  response.send("RegisterH");
+  insertMedicalData(req.body.server_name, req.body.server_age, req.body.server_phone, req.body.server_pulse, req.body.server_saturationO2,req.body.server_diseases);
 });
 
-function insertpeople(server_name, server_age, server_phone, server_pulse, server_saturationO2,server_diseases) {
-  var save_result
-  connection.query("INSERT INTO history(history_name, history_age, history_phone,history_pulse,history_oxygen,history_diseases) VALUES('" + server_name + "','" + server_age + "','" + server_phone + "','" + server_pulse +"','"+ server_saturationO2 +  "','"+ server_diseases + "')", function (err, result2) {
+function insertMedicalData(server_name, server_age, server_phone, server_pulse, server_saturationO2,server_diseases) {
+  var save_result_medical
+  connection.query("INSERT INTO history(history_name, history_age, history_phone,history_pulse,history_oxygen,history_diseases) VALUES('" + server_name + "','" + server_age + "','" + server_phone + "','" + server_pulse +"','"+ server_saturationO2 +  "','"+ server_diseases + "')", function (err, result_medical) {
     if (err) throw err
-    save_result = result2;
-    console.log('The solution is1: ', result2)
+    save_result_medical = result_medical;
+    console.log('The solution is1: ', result_medical)
   })
 
 }
@@ -188,10 +188,11 @@ app.post('/api/getPatientsList', function (req, response) {
         userData.age = rows[0].patients_age;
         userData.phone = rows[0].patients_phone;
 
-        response.send(userData);
-        console.log("True");
+       
     if (err) throw err
     save_resultcrash = resultcarcrash;
+    response.send(userData);
+    console.log("True");
     // response.send(rows);
   })
 
