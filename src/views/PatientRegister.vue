@@ -56,8 +56,9 @@
 
 <script>
 /*eslint-disable*/
+import { router } from "../router";
 import axios from "axios";
-
+import { setInterval } from "timers";
 export default {
   data() {
     return {

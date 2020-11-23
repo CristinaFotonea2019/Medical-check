@@ -45,8 +45,9 @@
 
 <script>
 /* eslint-disable*/
-import axios from "axios";
 import { router } from "../router";
+import axios from "axios";
+import { setInterval } from "timers";
 export default {
   data() {
     return {
@@ -95,17 +96,17 @@ export default {
                 this.persIDLoginDoc = null;
                 
                 localStorage.setItem(
-                  "userData_name",
+                  "userDataDoc_name",
                   response.data.name
                 ); // save user data in browser till the browser is close
                 localStorage.setItem(
-                  "userData_password",
+                  "userDataDoc_password",
                   response.data.password
                 );
-                localStorage.setItem("userData_mail", response.data.mail);
-                localStorage.setItem("userData_persId", response.data.persId);
-                localStorage.setItem("isLogged", "true");
-                console.log(localStorage.getItem("userData_name"));
+                localStorage.setItem("userDataDoc_mail", response.data.mail);
+                localStorage.setItem("userDataDoc_persID", response.data.persID);
+                localStorage.setItem("Doc_Logged", "true");
+                console.log(localStorage.getItem("userDataDoc_name"));
               } else {
                 this.popUptxt = " Username or password invalid! ";
               }
@@ -123,7 +124,7 @@ export default {
       this.dialogLogIn = false;
       if (this.popUptxt == "Login successfully!") {
         console.log("Meeeeeeeeeeeeeeeeow");
-        router.push("/Enroll");
+        router.push("/Patients");
       }
     },
 

@@ -39,23 +39,27 @@ export default {
         {
           name: "Doctor Login",
           path: "/DoctorLogin"
-        },
-        {
-          name: "Enroll",
-          path: "/Enroll"
-        },
-        {
-          name: "History",
-          path: "/History"
-        },
-        {
-          name:"Medical Check",
-          path:"/MedicalCheck"
-        },
-        {
-          name:"Patients",
-          path:"/Patients"
         }
+        // {
+        //   name: "Enroll",
+        //   path: "/Enroll"
+        // },
+        // {
+        //   name: "History",
+        //   path: "/History"
+        // },
+        // {
+        //   name:"Medical Check",
+        //   path:"/MedicalCheck"
+        // },
+        // {
+        //   name:"Patients",
+        //   path:"/Patients"
+        // },
+        //  {
+        //   name:"Recommendation",
+        //   path:"/Recommendation"
+        // }
       ]
     };
   },

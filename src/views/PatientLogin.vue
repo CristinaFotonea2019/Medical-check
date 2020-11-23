@@ -39,8 +39,9 @@
 
 <script>
 /* eslint-disable*/
-import axios from "axios";
 import { router } from "../router";
+import axios from "axios";
+import { setInterval } from "timers";
 export default {
   data() {
     return {
@@ -55,7 +56,7 @@ export default {
       ],
       passRulesPatient: [
         v => !!v || "Password is required",
-        v => v.length >= 8 || "Password must be at least 8 characters"
+        v => v.length > 9 || "Password must be at least 8 characters"
       ]
     };
   },
@@ -80,18 +81,18 @@ export default {
                 this.passLoginPatient = null;
 
                 localStorage.setItem(
-                  "userData_name",
+                  "userDataPatient_name",
                   response.data.name 
                 ); // save user data in browser till the browser is close
-                localStorage.setItem("userData_age", response.data.age);
+                localStorage.setItem("userDataPatient_age", response.data.age);
                 localStorage.setItem(
-                  "userData_password",
+                  "userDataPatient_password",
                   response.data.password
                 );
-                localStorage.setItem("userData_mail", response.data.mail);
-                localStorage.setItem("userData_phone", response.data.phone);
-                localStorage.setItem("isLogged", "true");
-                console.log(localStorage.getItem("userData_name"));
+                localStorage.setItem("userDataPatient_mail", response.data.mail);
+                localStorage.setItem("userDataPatient_phone", response.data.phone);
+                localStorage.setItem("Patient_Logged", "true");
+                console.log(localStorage.getItem("userDataPatient_name"));
               } else {
                 this.popUptxt = " Username or password invalid! ";
               }

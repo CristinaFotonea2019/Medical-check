@@ -9,34 +9,49 @@
   >
     <div class="header">
       <v-layout align-center justify-space-between row fill-height>
+        <img class="image" src="@/assets/LogoHome.png" />
         <h2 class="textAlert">Patients List</h2>
         <v-btn class="btnUser" v-on:click="User()">
+          <img class="imagebtn" src="@/assets/User.png" />
         </v-btn>
       </v-layout>
     </div>
     <div class="alignData">
-      <v-list v-for="item in historyData" :key="item.name" class="listHistory">
+          <v-btn class="btnDelete" rounded v-on:click="Recommendation()">Recommendation</v-btn>
+      <v-list v-for="item in patientsData" :key="item.name" class="listHistory">
         <v-list-tile>
-          <v-list-tile-content class="listAlign" v-on:click="Details(item)">
+         <v-btn class="btnDelete" rounded v-on:click="HistoryPatient()">History</v-btn>
+          <v-list-tile-content class="listAlign" v-on:click="DetailsPatient(item)">
             <v-spacer />
-            <h2>{{item.namePatientsList}}</h2>
+            <h2 >{{item.namePatientsList}}</h2>
             <v-spacer />
-            <h2>{{item.agePatientsList}}</h2>
+            <h2>{{item.patients_name}}</h2>
             <v-spacer />
-            <h2>{{item.phonePatientsList}}</h2>
+            <h2>{{item.patients_age}}</h2>
+            <v-spacer />
+            <h2 id="patientPhone">{{item.patients_phone}}</h2>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
     </div>
-
     <v-dialog v-model="dialogHistory" :max-width="400">
       <v-card class="popUpUser">
         <h3>User info</h3>
         <center>
-          <v-text-field v-model="namePatientsList" class="log justify-center resizeHistory" disabled></v-text-field>
-          <v-text-field v-model="agePatientsList" class="log justify-center resizeHistory" disabled></v-text-field>
-          <v-text-field v-model="phonePatientsList" class="log justify-center resizeHistory" disabled></v-text-field>
+          <v-text-field v-model="nameDoctor" class="log justify-center resizeHistory" disabled></v-text-field>
+          <v-text-field v-model="mailDoctor" class="log justify-center resizeHistory" disabled></v-text-field>
+          <v-text-field v-model="persIDDoctor" class="log justify-center resizeHistory" disabled></v-text-field>
         </center>
+        <div class="btnAlignRow">
+          <v-btn class="btnBack" rounded color="primary" v-on:click="UserBack()">Sign out</v-btn>
+          <v-btn class="btnDeleteUser" rounded color="primary" v-on:click="UserDelete()">Delete User</v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogDeleteEvent" :max-width="350">
+      <v-card class="popUpUser" :height="200">
+        <h2>{{deleteText}}</h2>
+        <v-btn class="btnDeleteOk" rounded color="primary" v-on:click="DeleteOk()">Ok</v-btn>
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialogDetailsEvent" :max-width="350">
@@ -45,11 +60,9 @@
         <h2>Nume: <b>{{namePatientsList}} </b></h2>
         <h2> Varsta: <b> {{agePatientsList}}</b></h2>
         <h2> Numar de telefon: <b>{{phonePatientsList}}</b></h2>
+        <h2> Mail: <b>{{mailPatientsList}} </b></h2>
       </v-card>
     </v-dialog>
-
-        <!-- Aici o sa fie datele pe care le afiseaza din baza de date despre fiecare pacient-->
- 
   </v-layout>
 </template>
 <script>
@@ -62,33 +75,62 @@ export default {
     return {
       popUpUser: "",
       dialogHistory: false,
+      nameDoctor: "",
+      mailDoctor: "",
+      persIDDoctor:"",
+
+      mailPatientsList: "",
       namePatientsList: "",
-      agePatientsList:"",
+      agePatientsList: "",
       phonePatientsList: "",
+      
       detailsFlag: true,
       dialogDeleteEvent: false,
       deleteText: "",
+      dialogDetailsEvent: false,
       
-      historyData: []
+      patientsData: []
     };
   },
   methods: {
- User() {
-      this.namePatientsList = localStorage.getItem("userData_name");
-      this.agePatientsList = localStorage.getItem("userData_age");
-      this.phonePatientsList = localStorage.getItem("userData_phone");
+    User() {
+      this.nameDoctor = localStorage.getItem("userDataDoc_name");
+      this.mailDoctor = localStorage.getItem("userDataDoc_mail");
+      this.persIDDoctor = localStorage.getItem("userDataDoc_persID");
       this.dialogHistory = !this.dialogHistory;
     },
-   
-    Details(item) {
+    UserOk() {
+      this.dialogHistory = false;
+      if (this.popUpUser == "Inchide!") {
+        console.log("Merge");
+      }},
+
+    UserBack() {
+      localStorage.setItem("userDataDoc_name", "");
+      localStorage.setItem("userDataDoc_mail", "");
+      localStorage.setItem("userDataDoc_persID", "");
+      localStorage.setItem("Doc_Logged", "false");
+      router.push("/DoctorLogin");
+    },
+    HistoryPatient() {
+      localStorage.setItem("Doc_Logged", "true");
+      router.push("/History");
+    },
+    Recommendation() {
+      localStorage.setItem("Doc_Logged", "true");
+      router.push("/Recommendation");
+    },
+    DetailsPatient(item) {
       console.log("Detalii aiciiiiiii");
       setTimeout(() => {
         if (this.dialogDeleteEvent == false) {
-          this.namePatientsList = item.namePatientsList;
-          this.agePatientsList=item.agePatientsList;
-          this.phonePatientsList = item.phonePatientsList;
+          this.mailPatientsList = item.patients_mail;
+          this.namePatientsList = item.patients_name;
+          this.agePatientsList = item.patients_age;
+          this.phonePatientsList = item.patients_phone;
+          this.dialogDetailsEvent = !this.dialogDetailsEvent;
         } else {
-          
+          //S-a apasat pe Delete
         }
       }, 100);
 
@@ -100,31 +142,26 @@ export default {
     setInterval(() => {
       axios.post("/api/getPatientsList").then(
         response => {
-          console.log(this.historyData.length + " " + response.data.length);
+          console.log(this.patientsData.length + " " + response.data.length);
           console.log("de ce");
-          console.log(this.historyData);
-          console.log(response.data);
-          if (this.historyData.length < response.data.length) {
-            console.log("if");
-            if (this.historyData.length == 0) {
+          if (this.patientsData.length < response.data.length) {
+            if (this.patientsData.length == 0) {
               response.data.forEach(element => {
                 console.log("Orice2");
-                this.historyData.push(element);
+                this.patientsData.push(element);
               });
             } else {
-              console.log("Else");
               for (
-                let index = this.historyData.length;
+                let index = this.patientsData.length;
                 index < response.data.length;
                 index++
               ) {
-                console.log("push");
-                this.historyData.push(response.data[index]);
+                this.patientsData.push(response.data[index]);
               }
             }
           }
-          console.log("history");
-          console.log(this.historyData);
+
+          console.log(this.patientsData);
         },
         error => {
           console.log(error);
@@ -146,13 +183,12 @@ export default {
   height: 60px;
   /* background-color: black; */
 }
-.titleDashboard {
+.textAlert {
   font-size: 2rem;
   font-weight: 400;
   font-family: "Roboto", sans-serif;
   font-style: italic;
   color: white;
- margin-left: 800px;
 }
 .image {
   width: 20px;

@@ -8,39 +8,34 @@
     :style="{'background-image':'url('+require('../assets/Sensors.png')+')'}"
   >
     <div class="header">
-      <v-layout align-center >
-        <h2 class="titleDashboard" > Dashboard</h2>
+      <v-layout align-center justify-space-between row fill-height>
+        <img class="image" src="@/assets/LogoHome.png" />
+        <h2 class="textAlert">History</h2>
       </v-layout>
     </div>
-   <!--    <div class="alignData">
-      <v-list v-for="item in historyData" :key="item.name" class="listHistory">
+    <div class="alignData">
+      <v-list v-for="item in patientsData" :key="item.name" class="listHistory">
         <v-list-tile>
-       <v-list-tile-content class="listAlign" v-on:click="Details(item)">
+          <v-list-tile-content class="listAlign" v-on:click="DetailsPatient(item)">
             <v-spacer />
-            <h2 id="carOwner">{{item.car_owner}}</h2>
+            <h2>{{item.history_name}}</h2>
             <v-spacer />
-            <h2>{{item.car_nr}}</h2>
+            <h2>{{item.history_age}}</h2>
             <v-spacer />
-            <h2>{{item.car_EmergencyPerson}}</h2>
-            <v-spacer />
-            <h2>{{item.car_date}}</h2>
+            <h2 id="patientPhone">{{item.history_phone}}</h2>
           </v-list-tile-content>
-        </v-list-tile> 
+        </v-list-tile>
       </v-list>
-    </div> -->
+    </div>
     <v-dialog v-model="dialogDetailsEvent" :max-width="350">
       <v-card class="carCrashDetails" :height="400">
-
-        <h1>Person Details</h1>
-        <!--<h2>Number: <b>{{carCrash_nr}} </b></h2>
-        <h2> Owner: <b> {{carCrash_owner}}</b></h2>
-        <h2>Impact sensor: <b>{{carCrash_crashSensor}}</b></h2>
-        <h2> GPS: <b>{{carCrash_GPS}}</b></h2>
-        <h2>Temperature sensor: <b>{{carCrash_temperatureSensor}}</b></h2>
-        <h2> Fire sensor:<b> {{carCrash_fireSensor}}</b></h2>
-        <h2> Emergency Person: <b>{{carCrash_EmergencyPerson}}</b></h2>
-        <h2> Date: <b>{{carCrash_date}}</b></h2> --> 
-        <!-- Aici o sa fie datele pe care le afiseaza din baza de date despre fiecare pacient-->
+        <h1>Details</h1>
+        <h2>Nume: <b>{{nameHistory}} </b></h2>
+        <h2> Varsta: <b> {{ageHistory}}</b></h2>
+        <h2> Numar de telefon: <b>{{phoneHistory}}</b></h2>
+        <h2> Pulse: <b>{{pulseHistory}} </b></h2>
+        <h2>Saturation Oxygen:<b>{{saturationHistory}}</b></h2>
+        <h2>Diseases:<b>{{diseasesHistory}}</b></h2>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -53,95 +48,77 @@ import { setInterval } from "timers";
 export default {
   data() {
     return {
-      popUpUser: "",
       dialogHistory: false,
-      usernameHistory: "",
       nameHistory: "",
-      mailHistory: "",
-      persIdHistory: "",
+      ageHistory: "",
+      phoneHistory: "",
+      pulseHistory: "",
+      saturationHistory:"",
+      diseasesHistory:"",
+      
       detailsFlag: true,
-      dialogDeleteEvent: false,
-      deleteText: "",
       dialogDetailsEvent: false,
-      carCrash_nr: "",
-      carCrash_owner: "",
-      carCrash_crashSensor: "",
-      carCrash_GPS: "",
-      carCrash_temperatureSensor: "",
-      carCrash_fireSensor: "",
-      carCrash_EmergencyPerson: "",
-      carCrash_date: "",
-      historyData: []
+      dialogDeleteEvent: false,
+      patientsData: []
     };
   },
   methods: {
-    UserBack() {
-      localStorage.setItem("userData_name", "");
-      localStorage.setItem("userData_mail", "");
-      localStorage.setItem("userData_username", "");
-      localStorage.setItem("userData_persId", "");
-      localStorage.setItem("isLogged", "false");
-      router.push("/Login");
-    },
-   
-    Details(item) {
+    DetailsPatient(item) {
       console.log("Detalii aiciiiiiii");
       setTimeout(() => {
         if (this.dialogDeleteEvent == false) {
-          this.carCrash_nr = item.car_nr;
-          this.carCrash_owner = item.car_owner;
-          this.carCrash_crashSensor = item.car_crashSensor;
-          this.carCrash_GPS = item.car_GPS;
-          this.carCrash_temperatureSensor = item.car_temperatureSensor;
-          this.carCrash_fireSensor = item.car_fireSensor;
-          this.carCrash_EmergencyPerson = item.car_EmergencyPerson;
-          this.carCrash_date = item.car_date;
+          this.nameHistory = item.history_name;
+          this.ageHistory = item.history_age;
+          this.phoneHistory = item.history_phone;
+          this.pulseHistory = item.history_pulse;
+          this.saturationHistory = item.history_oxygen;
+          this.diseasesHistory = item.history_diseases;
           this.dialogDetailsEvent = !this.dialogDetailsEvent;
         } else {
-          
+          //S-a apasat pe Delete
         }
       }, 100);
 
       console.log("Detalii");
     }
   },
-  // mounted() {
-  //   console.log("Mounted");
-  //   setInterval(() => {
-  //     axios.post("/api/getCrashEvents").then(
-  //       response => {
-  //         console.log(this.historyData.length + " " + response.data.length);
-  //         console.log("de ce");
-  //         if (this.historyData.length < response.data.length) {
-  //           if (this.historyData.length == 0) {
-  //             response.data.forEach(element => {
-  //               console.log("Orice2");
-  //               this.historyData.push(element);
-  //             });
-  //           } else {
-  //             for (
-  //               let index = this.historyData.length;
-  //               index < response.data.length;
-  //               index++
-  //             ) {
-  //               this.historyData.push(response.data[index]);
-  //             }
-  //           }
-  //         }
+  mounted() {
+    console.log("Mounted");
+    setInterval(() => {
+      axios.post("/api/getHistoryPatient").then(
+        response => {
+          console.log(this.patientsData.length + " " + response.data.length);
+          console.log("de ce");
+          if (this.patientsData.length < response.data.length) {
+            if (this.patientsData.length == 0) {
+              response.data.forEach(element => {
+                console.log("Orice2");
+                this.patientsData.push(element);
+              });
+            } else {
+              for (
+                let index = this.patientsData.length;
+                index < response.data.length;
+                index++
+              ) {
+                this.patientsData.push(response.data[index]);
+              }
+            }
+          }
 
-  //         console.log(this.historyData);
-  //       },
-  //       error => {
-  //         console.log(error);
-  //       }
-  //     );
-  //   }, 1500);
-  // },
-  // watch: {
-  //   $route(to, from) {
-  //     console.log("Routed");
-  //   }
-  // }
+          console.log(this.patientsData);
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }, 1500);
+  },
+  watch: {
+    $route(to, from) {
+      console.log("Routed");
+    }
+  }
 };
 </script>
 <style>
@@ -151,13 +128,12 @@ export default {
   height: 60px;
   /* background-color: black; */
 }
-.titleDashboard {
+.textAlert {
   font-size: 2rem;
   font-weight: 400;
   font-family: "Roboto", sans-serif;
   font-style: italic;
   color: white;
- margin-left: 800px;
 }
 .image {
   width: 20px;

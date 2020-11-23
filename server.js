@@ -68,11 +68,15 @@ app.post('/api/loginPatient', function (req, response) {
       if (rows[0].patients_mail == req.body.server_mailPatient && (passwordHash.verify(req.body.server_passwordPatient, rows[0].patients_password))) { //verify user and pass
         console.log(rows[0].patients_mail);
         console.log(rows[0].patients_password);
-        userData = {}; //object
-        userData.mail = rows[0].patients_mail; //save data in obj userData
-        userData.password = rows[0].patients_password;
+        userDataPatient = {}; //object
+        userDataPatient.name = rows[0].patients_name;
+        userDataPatient.age=rows[0].patients_age;
+        userDataPatient.phone = rows[0].patients_phone;
+        userDataPatient.mail = rows[0].patients_mail; //save data in obj userData
+        userDataPatient.password = rows[0].patients_password;
+       
         console.log("True");
-        response.send(userData);
+        response.send(userDataPatient);
       }
       else {
         response.send("Username or password invalid!")
@@ -107,12 +111,16 @@ app.post('/api/loginDoctor', function (req, response) {
       console.log(rows[0].doctors_mail);
       console.log(req.body.server_mailDoctors);
       if ((rows[0].doctors_mail == req.body.server_mailDoctors) && (req.body.server_passwordDoctors== rows[0].doctors_password)) { //verify mail  and pass
-        userData = {}; //object
-        userData.mail = rows[0].doctors_mail; //save data in obj userData
-        userData.password = rows[0].doctors_password;
+        userDataDoc = {}; //object
+        userDataDoc.name = rows[0].doctors_name;
+        userDataDoc.mail = rows[0].doctors_mail; //save data in obj userData
+        userDataDoc.persID= rows[0].doctors_persID;
+        userDataDoc.password = rows[0].doctors_password;
+        response.send(userDataDoc);
         console.log("True");
-        response.send(userData);
-        console.log("True");
+        console.log(userDataDoc.persIDDoctor);
+        console.log(rows[0].doctors_name)
+        
       }
       else {
         response.send("Username or password invalid!")
@@ -140,13 +148,13 @@ function sendMail(name, mail, mesaj) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'licentafast.2019@gmail.com',
-      pass: 'Cristina1998'
+      user: 'medicalcheck.application',
+      pass: 'medicalparola'
     }
   });
   var mailOptions = {
     from: name,
-    to: 'licentafast.2019@gmail.com',
+    to: 'cristinafotonea@gmail.com',
     subject: mail,
     text: mesaj,
   };
@@ -168,7 +176,7 @@ app.post('/api/mailcontacts', function (req, response) {
 //History Patient WEB Begin
 app.post('/api/getHistoryPatient', function (req, response) {
   var save_resultcrash
-  connection.query("SELECT * from history ", function (err, rows, resultcarcrash) {
+  connection.query("SELECT * from history", function (err, rows, resultcarcrash) {
     if (err) throw err
     save_resultcrash = resultcarcrash;
     response.send(rows);
@@ -180,20 +188,11 @@ app.post('/api/getHistoryPatient', function (req, response) {
 //List Patients WEB Begin
 app.post('/api/getPatientsList', function (req, response) {
   var save_resultcrash
-  connection.query("SELECT * from patients", function (err, rows, resultcarcrash) {
-    console.log("Get List Patients WEB");
-    console.log(rows[0].patients_name);
-    userData = {}; //object
-        userData.name = rows[0].patients_name; //save data in obj userData
-        userData.age = rows[0].patients_age;
-        userData.phone = rows[0].patients_phone;
-
-       
+  connection.query("SELECT * from patients", function (err, rows, resultcarcrash) { 
     if (err) throw err
     save_resultcrash = resultcarcrash;
-    response.send(userData);
-    console.log("True");
-    // response.send(rows);
+    console.log("List Patients ");
+    response.send(rows);
   })
 
 });

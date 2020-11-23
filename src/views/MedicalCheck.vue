@@ -44,7 +44,7 @@
           ></v-text-field>
           <v-btn class="btnRegister" rounded color="primary" v-on:click="verifyMedicalData()">Register</v-btn> 
           <v-btn class="btnLogOut" rounded color="primary" v-on:click="logOut()">Logout</v-btn>
-          <v-btn class="btnHistory" rounded color="primary" v-on:click="history()">History</v-btn>
+          <v-btn class="btnHistory" rounded color="primary" v-on:click="toHistory()">History</v-btn>
         </v-card>
         <div class="register">
           <h2>Welcome!</h2>
@@ -63,8 +63,9 @@
 
 <script>
 /*eslint-disable*/
+import { router } from "../router";
 import axios from "axios";
-
+import { setInterval } from "timers";
 export default {
   data() {
     return {
@@ -167,7 +168,16 @@ export default {
     },
     registerOk() {
       this.dialog = false; //variabila sa dispara pop-ul cu info despre register
-    }
+    },
+      logOut() {
+      localStorage.setItem("Patient_Logged", "false");
+      router.push("/PatientLogin");
+    },
+  toHistory(){
+    // localStorage.setItem("Patient_Logged", "true");
+    console.log("toHistory");
+     router.push("/History");
+  }
   }
 };
 </script>

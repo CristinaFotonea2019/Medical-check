@@ -8,6 +8,7 @@ import PatientRegister from './views/PatientRegister.vue'
 import History from './views/History.vue'
 import Patients from './views/Patients.vue'
 import MedicalCheck from './views/MedicalCheck.vue'
+import Recommendation from './views/Recommendation.vue'
 // import axios from "axios"
 
 Vue.use(Router)
@@ -55,26 +56,36 @@ export const router = new Router({
             path: '/Enroll',
             name: 'Enroll',
             component: Enroll
+        },
+        {
+            path: '/Recommendation',
+            name: 'Recommendation',
+            component: Recommendation
         }
+
     ]
 
 })
-// router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
 
-//     const publicPages = ['/', '/MedicalCheck', '/DoctorLogin', '/PatientLogin', '/PatientRegister', '/Recomandation', '/History','/Enroll'];
-//     const patientPage =['/PatientLogin'];
-//     const doctorPage =['/DoctorLogin'];
-//     if(localStorage.getItem('Patient_Logged') == "false" && (to.fullPath == '/Enroll' || to.fullPath == '/MedicalCheck' || to.fullPath == '/History' )) 
-//     {
-//         return next('/PatientLogin');
-//     }
-//     // daca variabila Patient_Logged este false adica nu este pacientul logat si se vrea a accesa una din paginile de mai sus enumerate(pe care le poate vedea doar un pacient logat)
-//     // te redirectioneaza automat catre pagina de login a pacientului
-//     if(localStorage.getItem('Doc_Logged') == "false" && (to.fullPath == '/Recomandation' || to.fullPath == '/MedicalCheck' || to.fullPath == '/History' ))
-//     {
-//         return next('/DoctorLogin');
-//     } //si aici exact acelasi lucru doar ca pentru medic
-//     next();
+    const publicPages = ['/', '/MedicalCheck', '/DoctorLogin', '/PatientLogin', '/PatientRegister', '/Patients', '/History','/Enroll','/Recommendation'];
+    const patientPage =['/PatientLogin'];
+    const doctorPage =['/DoctorLogin'];
+    if(localStorage.getItem('Patient_Logged') == "false" && (to.fullPath == '/Enroll' || to.fullPath == '/MedicalCheck' )) 
+    {
+        return next('/PatientLogin');
+    }
+    // daca variabila Patient_Logged este false adica nu este pacientul logat si se vrea a accesa una din paginile de mai sus enumerate(pe care le poate vedea doar un pacient logat)
+    // te redirectioneaza automat catre pagina de login a pacientului
+    if(localStorage.getItem('Doc_Logged') == "false" && (to.fullPath == '/Patients' || to.fullPath =='/Recommendation'  ))
+    {
+        return next('/DoctorLogin');
+    } //si aici exact acelasi lucru doar ca pentru medic
+    if( localStorage.getItem('Doc_Logged') == "false" && localStorage.getItem('Patient_Logged') == "false"  && (to.fullPath == '/History'   ))
+    {
+        return next('/PatientLogin');
+    }
+    next();
    
-// }
-// )
+}
+)
